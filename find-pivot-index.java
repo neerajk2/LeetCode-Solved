@@ -3,17 +3,17 @@
 
 class Solution {
     public int pivotIndex(int[] nums) {
-        int total = 0;
+        int totalSum = 0;
         if (nums.length == 0) return -1;
-        for (int i : nums) total += i;
-        if (nums[0]==total) return 0;
-        int sum = 0;
+        for (int i : nums) totalSum += i;
+        if (nums[0]==totalSum) return 0;
+        int currSum = 0;
         for(int i=0; i<nums.length-1; i++) 
         {
-            sum += nums[i];
-            if(sum == total - sum - nums[i+1]) return i+1;
+            currSum += nums[i];
+            if(currSum == totalSum - currSum - nums[i+1]) return i+1;
         }
-        if (nums[nums.length-1]==total) return nums.length-1;
+        if (nums[nums.length-1]==totalSum) return nums.length-1;
         return -1;
     }
 }
