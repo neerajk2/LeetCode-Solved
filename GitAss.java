@@ -1,3 +1,4 @@
+import java.util.MissingFormatArgumentException;
 import java.util.Stack;
 
 public class GitAss {
@@ -8,6 +9,8 @@ public class GitAss {
 
         Stack<Integer> operand = new Stack<Integer>();
         Stack<Character> operator = new Stack<Character>();
+
+        int count_left = 0, count_right = 0, count_operators = 0, count_operands = 0;
 
         for (int i = 0; i < chars.length; i++)
         {
@@ -23,17 +26,24 @@ public class GitAss {
                 while (i < chars.length && chars[i] >= '0' && chars[i] <= '9') {
                     num.append(chars[i++]);
                 }
+                i--;
+                count_operands++;
                 operand.push(Integer.parseInt(num.toString()));
             }
 
-            else if (chars[i] == '(')
+            else if (chars[i] == '(') {
                 operator.push(chars[i]);
+                count_left++;
+            }
+
 
             // Closing brace encountered, solve entire brace
             else if (chars[i] == ')')
             {
-                while (operator.peek() != '(')
+                count_right++;
+                while (operator.peek() != '(') {
                     operand.push(applyOp(operator.pop(), operand.pop(), operand.pop()));
+                }
                 operator.pop();
             }
 
@@ -43,6 +53,7 @@ public class GitAss {
                 // While top of 'operator' has same or greater precedence to current
                 // chars, which is an operator. Apply operator on top of 'operator'
                 // to top two elements in operand stack
+                count_operators++;
                 while (!operator.empty() && precedence(chars[i]) <= precedence(operator.peek()))
                     operand.push(applyOp(operator.pop(), operand.pop(), operand.pop()));
 
@@ -51,10 +62,21 @@ public class GitAss {
             }
         }
 
+        if (count_left != count_right) {
+            throw new
+                    MissingFormatArgumentException("Missing parenthesis");
+        }
+        if (count_operators != count_operands-1) {
+            throw new
+                    MissingFormatArgumentException("Syntex error");
+        }
+
         // Entire expression has been parsed, apply remaining operators
         // on remaining operands in stacks.
-        while (!operator.empty())
+        while (!operator.empty()) {
+            System.out.print("here");
             operand.push(applyOp(operator.pop(), operand.pop(), operand.pop()));
+        }
 
         // Top of 'operand' contains result, return it
         return operand.pop();
@@ -85,6 +107,7 @@ public class GitAss {
     // and 'b'. Return the result.
     private int applyOp(char op, int b, int a)
     {
+        System.out.println(a+" "+b );
         switch (op)
         {
             case '+':
@@ -94,9 +117,14 @@ public class GitAss {
             case '*':
                 return a * b;
             case '/':
-                if (b == 0)
+                System.out.println(a+" "+b);
+                if (b == 0) {
+                    System.out.println("here");
+
                     throw new
                             UnsupportedOperationException("Cannot divide by zero");
+                }
+
                 return a / b;
             case '^':
                 return (int)Math.pow(a,b);
@@ -108,12 +136,12 @@ public class GitAss {
     public static void main(String[] args)
     {
         GitAss gas = new GitAss();
-        System.out.println(gas.evaluateExpression("10 + 2 * 6"));
-        System.out.println(gas.evaluateExpression("100 * 2 + 12"));
-        System.out.println(gas.evaluateExpression("100 * 2 ^ 12"));
-        System.out.println(gas.evaluateExpression("100 + 2 ^ 3 - 12"));
-        System.out.println(gas.evaluateExpression("100 * ( 2 + 12 )"));
-        System.out.println(gas.evaluateExpression("100 * ( 2 + 12 ) / 14"));
+        System.out.println(gas.evaluateExpression("2*"));
+        //System.out.println(gas.evaluateExpression("100 * 2 + 12"));
+//        System.out.println(gas.evaluateExpression("100 * 2 ^ 12"));
+//        System.out.println(gas.evaluateExpression("100 + 2 ^ 3 - 12"));
+//        System.out.println(gas.evaluateExpression("100 * ( 2 + 12 )"));
+//        System.out.println(gas.evaluateExpression("100 * ( 2 + 12 ) / 14"));
     }
 
 }
