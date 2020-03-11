@@ -353,16 +353,16 @@ public class PostfixCalculationService implements CalculationService {
         // Top of 'operand' contains result, return it
         return operand.pop();
     }
-
+    // 
     // Returns the precedence of each operator,
     // relative to another.
     private int precedence(char ch)
     {
         switch (ch)
         {
-            case '+':
-            	return 1;
             case '-':
+            	return 1;
+            case '+':
                 return 2;
             case '*':
             	return 3;
@@ -374,7 +374,7 @@ public class PostfixCalculationService implements CalculationService {
         return -1;
 
     }
-
+    // Helper methods
     // A utility method to apply an operator 'op' on operands 'a'
     // and 'b'. Return the result.
     private int applyOp(char op, int b, int a)
